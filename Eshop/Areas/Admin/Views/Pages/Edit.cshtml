@@ -1,0 +1,71 @@
+﻿@using DataAccess.Model
+@using Glimpse.Mvc.AlternateType
+@using Microsoft.Ajax.Utilities
+@model DataAccess.Model.Page
+
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        @if (Model.Id > 0)
+                        {
+                            @Model.Name
+                            <span> - editace</span>
+                        }
+                        else
+                        {
+                            <span>Přidat stránku</span>
+                        }
+                    </h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    @using (Html.BeginForm(Model.Id > 0 ? "Update" : "Insert", "Pages"))
+                    {
+
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.FileStorageId)
+                        @Html.HiddenFor(model => model.GalleryId)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Identificator, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Identificator, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Identificator, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Content, new { htmlAttributes = new { @class = "form-control wysihtml" } })
+                            @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+                        </div>
+                        
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Uložit</button>
+                        </div>
+
+                    }
+                </div>
+                <!-- /.box-body -->
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".wysihtml").wysihtml5();
+    });
+</script>

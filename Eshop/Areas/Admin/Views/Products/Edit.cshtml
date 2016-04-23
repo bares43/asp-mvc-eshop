@@ -1,0 +1,120 @@
+﻿@using DataAccess.Model
+@using Glimpse.Mvc.AlternateType
+@using Microsoft.Ajax.Utilities
+@model DataAccess.Model.Product
+
+@{
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        @if (Model.Id > 0)
+                        {
+                            @Model.Name
+                            <span> - editace</span>
+                        }
+                        else
+                        {
+                            <span>Přidat produkt</span>
+                        }
+                    </h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    @using (Html.BeginForm(Model.Id>0 ? "Update": "Insert","Products"))
+                    {
+
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.FileStorageId)
+                        @Html.HiddenFor(model => model.GalleryId)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control"}})
+                            @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control"}})
+                            @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FullDescription, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EditorFor(model => model.FullDescription, new {htmlAttributes = new {@class = "form-control wysihtml" } })
+                            @Html.ValidationMessageFor(model => model.FullDescription, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Price, htmlAttributes: new {@class = "control-label col-md-2"})
+                            <div class="input-group" style="width: 100%">
+
+                                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                                <span class="input-group-addon">Kč</span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Price, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Visible, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EditorFor(model => model.Visible, new {htmlAttributes = new {@class = "icheck"}})
+                            @Html.ValidationMessageFor(model => model.Visible, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Highlighted, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Highlighted, new { htmlAttributes = new { @class = "icheck" } })
+                            @Html.ValidationMessageFor(model => model.Highlighted, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StockQuantity, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.StockQuantity, new { htmlAttributes = new { @class = "" } })
+                            @Html.ValidationMessageFor(model => model.StockQuantity, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StockStatus, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EnumDropDownListFor(model => model.StockStatus, new {@class = "select2"})
+                            @Html.ValidationMessageFor(model => model.StockStatus, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.DropDownList("category_id[]", new MultiSelectList(ViewBag.Categories, "Id", "Name", Model.Categories.Select(c => c.Id)), new { @class = "form-control select2", multiple="true" })
+                            @Html.ValidationMessageFor(model => model.Categories, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Uložit</button>
+                        </div>
+
+                    }
+                </div>
+                <!-- /.box-body -->
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('input.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+        });
+
+        $('select.select2').select2();
+
+        $(".wysihtml").wysihtml5();
+    });
+</script>

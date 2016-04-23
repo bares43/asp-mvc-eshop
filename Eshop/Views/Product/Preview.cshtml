@@ -1,0 +1,24 @@
+﻿@model Eshop.Models.View.ProductPreview
+@{
+    Layout = null;
+}
+<div class="thumbnail product-preview">
+    <div class="product-overlay">
+        <a href="@Url.Action("Detail", "Product", new {idProduct = Model.Product.Id})">
+            @if (Model.Image != null)
+            {
+                <img src="@Url.Action("GetImage","Uploads", new {idImage = Model.Image.Id, width = 160, height = 120})" alt="" />
+            }
+        </a>
+    </div>
+    <div class="caption">
+        <h4>@Model.Product.Name</h4>
+
+        <p>@Model.Product.Description</p>
+
+        <p><span class="new-price">@Model.Product.Price Kč</span></p>
+        <p>
+            <a class="btn btn-success" href="@Url.Action("Detail","Product", new {idProduct = Model.Product.Id})">Zobrazit detail</a>
+        </p>
+    </div>
+</div>

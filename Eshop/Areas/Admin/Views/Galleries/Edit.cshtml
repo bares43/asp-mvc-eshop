@@ -1,0 +1,171 @@
+﻿@model Eshop.Areas.Admin.Models.View.GalleryEdit
+
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">Upload obrázku</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm("Upload", "Galleries", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+                    {
+
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="picture" class="col-sm-2 control-label">Soubor</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control" id="picture" name="picture">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="description" class="col-sm-2 control-label">Popis</label>
+                                    <div class="col-sm-10">
+                                        <textarea id="description" name="description" style="width: 100%"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <input type="hidden" name="galleryId" value="@Model.Gallery.Id" />
+                        <input type="submit" class="btn btn-primary" value="Nahrát" />
+                    }
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Seznam obrázků</h3>
+                </div>
+
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Viditelný</th>
+                            <th class="text-center">Obrázek</th>
+                            <th class="text-center">Název</th>
+                            <th class="text-center">Popis</th>
+                            <th class="text-center">Dostupné rozměry</th>
+                            <th class="text-center">Akce</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var image in Model.Images)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="change-visibility icheck" data-id="@image.Id" name="Visible[@image.Id]" @if (image.Visible)
+                                                                                                        {
+                                                                                                            <text>checked="checked"</text>
+                                                                                                        }/>
+                                    </td>
+                                    <td class="text-center">
+                                        @{
+                                            var thumb = image.GetThumbnail(75, 56);
+
+                                            if (thumb != null)
+                                            {
+                                                <img src="@Url.Action("GetImage","Uploads", new {idImage = thumb.Id, Area = ""})" alt=""/>
+                                            }
+                                        }
+                                    </td>
+                                    <td>@image.Name</td>
+                                    <td>@image.Description</td>
+                                    <td class="text-left">
+                                        <a href="@Url.Action("GetImage","Uploads", new {Area = "", idImage = image.Id})" target="_blank" class="label label-primary">@image.Width x @image.Height</a>
+                                        @foreach (var thumbnail in image.Thumbnails)
+                                        {
+                                            <a href="@Url.Action("GetImage","Uploads", new {Area = "", idImage = thumbnail.Id})" target="_blank" class="label label-default">@thumbnail.Width x @thumbnail.Height</a>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="btn btn-default btn-sm create-thumbnail" data-id="@image.Id">Přidat rozměr</span>
+                                        <a href="@Url.Action("DeleteImage", "Galleries", new {idImage = image.Id})" class="btn btn-default btn-sm btn-danger">Smazat</a>
+                                    </td>
+                                </tr>
+                                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $(".create-thumbnail").on("click", function() {
+
+            var id = $(this).data("id");
+
+            $("#createThumbnailModal").find("input[name=idImage]").val(id);
+
+            $('#createThumbnailModal').modal('show');
+        });
+
+        $(".change-visibility").on("ifToggled", function() {
+            var input = $(this);
+            $.ajax({
+                url: "@Url.Action("ChangeVisibility")",
+                data: {
+                    idImage: input.data("id"),
+                    visible: input.is(":checked")
+                },
+                method: "POST",
+                success: function(response) {
+                    JsonAjaxCallback(response);
+                }
+            });
+        });
+
+        $('input.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+        });
+
+    });
+</script>
+
+<div class="modal fade" id="createThumbnailModal" tabindex="-1" role="dialog">
+    @using (Html.BeginForm("CreateThumbnail", "Galleries", FormMethod.Post))
+    {
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Přidat rozměr</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="width" class="control-label">Šířka</label>
+                        <input type="text" name="width" class="form-control" id="width">
+                    </div>
+                    <div class="form-group">
+                        <label for="height" class="control-label">Výška</label>
+                        <input type="text" name="height" class="form-control" id="height">
+                    </div>
+
+                    <input type="hidden" name="idImage"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+                    <input type="submit" value="Vytvořit" class="btn btn-primary"/>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    }
+</div><!-- /.modal -->
+                       

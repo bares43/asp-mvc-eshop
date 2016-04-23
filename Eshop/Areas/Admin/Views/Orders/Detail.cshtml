@@ -1,0 +1,134 @@
+﻿@using DataAccess.Model
+@using Glimpse.Core.Extensions
+@model DataAccess.Model.Order
+    @{
+    }
+
+<section class="content-header">
+    <h1>Přehled objednávky <small>č.@Model.Id</small></h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4">
+                            <h3>Informace</h3>
+                            Zákazník: @Model.Name @Model.Surname<br/>
+                            E-mail: <a class="hidden-xs" href="mailto:@Model.Email">@Model.Email</a><br/>
+                            Telefon: @Model.Phone<br/>
+                            Datum vytvoření: @Model.Created.ToString() <br/>
+                            @using (Ajax.BeginForm("ChangeState",new AjaxOptions() { HttpMethod = "POST", OnSuccess = "JsonAjaxCallback" }))
+                            {
+                                <span>Stav objednávky: </span>
+                                @Html.EnumDropDownListFor(model => model.OrderState, new {@class = "select2", style="width: 150px;"})
+                                <input type="hidden" name="idOrder" value="@Model.Id"/>
+                                <input type="submit" value="Nastavit" class="btn btn-default btn-sm"/>
+                            }
+                            Způsob dopravy: @($"{@Model.Delivery.Name} ({@Model.DeliveryPrice:C0})")<br/>
+                            Způsob platby: @($"{@Model.Payment.Name} ({@Model.PaymentPrice:C0})")
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <h3>Doručovací adresa</h3>
+                            <address>
+                                @Model.DeliveryAddress.Name @Model.DeliveryAddress.Surname<br/>
+                                @Model.DeliveryAddress.Street @Model.DeliveryAddress.StreedCode<br/>
+                                @Model.DeliveryAddress.ZipCode @Model.DeliveryAddress.City
+                            </address>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <h3>Fakturační adresa</h3>
+                            <address>
+                                @Model.BillingAddress.Name @Model.BillingAddress.Surname<br />
+                                @Model.BillingAddress.Street @Model.BillingAddress.StreedCode<br />
+                                @Model.BillingAddress.ZipCode @Model.BillingAddress.City
+                            </address>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Položky</h3>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Položka</th>
+                                    <th class="text-center">Cena / ks</th>
+                                    <th class="text-center">Ks</th>
+                                    <th class="text-center">Cena celkem</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>@item.Product.Name</td>
+                                        <td class="text-right padding-right-1p">@($"{item.Price:C0}")</td>
+                                        <td class="text-right padding-right-1p">@item.Amount</td>
+                                        <td class="text-right padding-right-1p">@(item.Amount*item.Price) Kč</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="3">Doprava (@Model.Delivery.Name)</td>
+                                    <td class="text-right padding-right-1p">@($"{@Model.DeliveryPrice:C0}")</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Platba (@Model.Payment.Name)</td>
+                                    <td class="text-right padding-right-1p">@($"{@Model.PaymentPrice:C0}")</td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td class="text-right padding-right-1p"><strong>@($"{@Model.TotalPrice:C0}")</strong></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Historie objednávky</h3>
+                            <table class="table table-bordered text-center">
+                                <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Stav</th>
+                                    <th>Administrátor</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderHistories)
+                                    {
+                                        <tr class="order-state-@item.OrderState.ToString().ToLower()">
+                                            <td>@item.Date.ToString()</td>
+                                            <td>@item.OrderState.ToDescription()</td>
+                                            <td>
+                                                @if (item.ChangedBy != null)
+                                                {<text>@item.ChangedBy.Name @item.ChangedBy.Surname</text>
+}
+                                            </td>
+
+                                        </tr>
+                                    }
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('select.select2').select2();
+
+    });
+
+   
+</script>

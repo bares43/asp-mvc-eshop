@@ -1,0 +1,129 @@
+﻿@using DataAccess.Model
+@model Eshop.Areas.Admin.Models.View.ProductsList
+@{
+}
+
+<section class="content-header">
+    <h1>
+        Produkty
+        <small>Přehled</small>
+    </h1>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+                <div class="box-header">
+                    <a href="@Url.Action("Add", "Products")" class="btn btn-primary">Přidat produkt</a>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 table-responsive">
+                            <table class="table table-bordered table-striped text-center">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Název</th>
+                                    <th>Stav</th>
+                                    <th>Počet ks</th>
+                                    <th>Viditelný</th>
+                                    <th>Zvýrazněný</th>
+                                    <th>Akce</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var product in Model.Products)
+                                {
+                                    <tr>
+                                        <td>@product.Id</td>
+                                        <td>@product.Name</td>
+                                        <td class="product-stock-status stock-status-@product.StockStatus.ToString().ToLower()">@product.StockStatusText()</td>
+                                        <td>@product.StockQuantity</td>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="change-visibility icheck" data-id="@product.Id" name="Visible[@product.Id]" @if (product.Visible)
+                                                                                                                                                      {
+                                                                                                                                                          <text> checked="checked" </text>
+                                                                                                                                                      }/>
+                                        </td>
+                                         <td class="text-center">
+                                            <input type="checkbox" class="change-highlight icheck" data-id="@product.Id" name="Highlighted[@product.Id]" @if (product.Highlighted) { <text> checked="checked" </text>  } />
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Edit", "Products", new {idProduct = product.Id})" class="btn btn-default btn-sm">Upravit</a>
+                                            <a href="@Url.Action("Detail", "Product", new {Area = "",idProduct = product.Id})" class="btn btn-default btn-sm" target="_blank">Zobrazit na webu</a>
+                                            @if (product.GalleryId != null)
+                                            {
+                                                <a href="@Url.Action("Edit", "Galleries", new {idGallery = product.GalleryId})" class="btn btn-default btn-sm">Galerie</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Add", "Galleries", new { AddToEntityType = nameof(Product), AddToEntityId = product.Id})" class="btn btn-sm btn-default">Galerie</a>
+                                            }
+                                            @if (product.FileStorageId != null)
+                                            {
+                                                <a href="@Url.Action("Edit", "Files", new {idFileStorage = product.FileStorageId})" class="btn btn-default btn-sm">Soubory</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Add", "Files", new { AddToEntityType = nameof(Product), AddToEntityId = product.Id})" class="btn btn-sm btn-default">Soubory</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-7 col-sm-push-5">
+                            @Html.Action("Paging","Home", new {@action = "Index", @controller = "Products", paginator = Model.Paginator})
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div><!-- /.row --> 
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".change-visibility").on("ifToggled", function () {
+            var input = $(this);
+            $.ajax({
+                url: "@Url.Action("ChangeVisibility")",
+                data: {
+                    idProduct: input.data("id"),
+                    visible : input.is(":checked")
+                },
+                method: "POST",
+                success : function(response) {
+                    JsonAjaxCallback(response);
+                }
+            });
+        });
+
+        $(".change-highlight").on("ifToggled", function () {
+            var input = $(this);
+            $.ajax({
+                url: "@Url.Action("ChangeHighlight")",
+                data: {
+                    idProduct: input.data("id"),
+                    highlight: input.is(":checked")
+                },
+                method: "POST",
+                success : function(response) {
+                    JsonAjaxCallback(response);
+                }
+            });
+        });
+
+        $('input.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+        });
+
+    });
+</script>

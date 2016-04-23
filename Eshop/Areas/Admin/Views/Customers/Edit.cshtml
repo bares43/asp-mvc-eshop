@@ -1,0 +1,76 @@
+﻿@model DataAccess.Model.Customer
+@{
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        @if (Model.Id > 0)
+                        {
+                            @Model.Name
+                            <span> - editace</span>
+                        }
+                        else
+                        {
+                            <span>Přidat zákazníka</span>
+                        }
+                    </h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    @using (Html.BeginForm(Model.Id > 0 ? "Update" : "Insert", "Customers"))
+                    {
+
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Surname, htmlAttributes: new {@class = "control-label col-md-2"})
+                            @Html.EditorFor(model => model.Surname, new {htmlAttributes = new {@class = "form-control"}})
+                            @Html.ValidationMessageFor(model => model.Surname, "", new {@class = "text-danger"})
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Uložit</button>
+                        </div>
+
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('input.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+        });
+
+        $('select.select2').select2();
+
+        $(".wysihtml").wysihtml5();
+    });
+</script>

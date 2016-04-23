@@ -1,0 +1,112 @@
+﻿@model Eshop.Areas.Admin.Models.View.FileStorageEdit
+
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title">Upload souboru</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm("Upload", "Files", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+                    {
+
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="picture" class="col-sm-2 control-label">Soubor</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control" id="picture" name="file">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="description" class="col-sm-2 control-label">Popis</label>
+                                    <div class="col-sm-10">
+                                        <textarea id="description" name="description" style="width: 100%"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <input type="hidden" name="fileStorageId" value="@Model.FileStorage.Id" />
+                        <input type="submit" class="btn btn-primary" value="Nahrát" />
+                    }
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Seznam souborů</h3>
+                </div>
+
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Viditelný</th>
+                                <th class="text-center">Název</th>
+                                <th class="text-center">Popis</th>
+                                <th class="text-center">Typ</th>
+                                <th class="text-center">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var file in Model.Files)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="change-visibility icheck" data-id="@file.Id" name="Visible[@file.Id]" @if (file.Visible) { <text> checked="checked" </text>  } />
+                                    </td>
+                                    <td>@file.Name</td>
+                                    <td>@file.Description</td>
+                                    <td class="text-left">
+                                        @file.ContentType
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("GetFile", "Uploads", new {idFile = file.Id, Area = ""})" class="btn btn-default btn-sm">Stáhnout</a>
+                                        <a href="@Url.Action("DeleteFile", "Files", new {idFile = file.Id})" class="btn btn-default btn-sm btn-danger">Smazat</a>
+                                    </td>
+                                </tr>
+                                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".change-visibility").on("ifToggled", function () {
+            var input = $(this);
+            $.ajax({
+                url: "@Url.Action("ChangeVisibility")",
+                data: {
+                    idFile: input.data("id"),
+                    visible : input.is(":checked")
+                },
+                method: "POST",
+                success : function(response) {
+                    JsonAjaxCallback(response);
+                }
+            });
+        });
+
+        $('input.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+        });
+
+    });
+</script>

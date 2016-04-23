@@ -1,0 +1,37 @@
+﻿@model Eshop.Models.View.PageDetail
+@{
+    ViewBag.Title = "Contact";
+}
+
+<h1>@Model.Page.Name</h1>
+<div>@Html.Raw(Model.Page.Content)</div>
+
+@if (Model.Images != null && Model.Images.Any())
+{
+
+    <h2>Fotogalerie</h2>
+    <div class="gallery" id="gallery">
+        @foreach (var image in Model.Images)
+        {
+            <div class="item">
+                <a href="@Url.Action("GetImage","Uploads", new {idImage = image.Id, width = 800, height = 600})" title="<h4>@image.Description</h4>">
+                    <img src="@Url.Action("GetImage","Uploads", new {idImage = image.Id, width = 75, height = 56})" alt="@image.Description" />
+                </a>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.Files != null && Model.Files.Any())
+{
+
+    <h2>Přiložené soubory</h2>
+    <ul>
+        @foreach (var file in Model.Files)
+        {
+            <li>
+                <a href="@Url.Action("GetFile", "Uploads", new {idFile = file.Id})">@file.Name</a>
+            </li>
+        }
+    </ul>
+}

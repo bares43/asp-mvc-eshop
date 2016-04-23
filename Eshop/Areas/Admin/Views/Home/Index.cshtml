@@ -1,0 +1,108 @@
+﻿<section class="content-header">
+    <h1>
+        Dashboard
+    </h1>
+</section>
+
+<section class="content text-center text-left-sm">
+        @if(ViewBag.OrdersCreatedCount > 0) { 
+            <div class="dashboard-info-box">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>@ViewBag.OrdersCreatedCount</h3>
+                        @if (ViewBag.OrdersCreatedCount == 1)
+                        {
+                            <p>Nová objednávka</p>
+                        }
+                        else if (ViewBag.OrdersCreatedCount < 5)
+                        {
+                            <p>Nové objednávky</p>
+                        }
+                        else
+                        {
+                            <p>Nových objednávek</p>
+                        }
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                </div>
+            </div><!-- ./col -->  
+        }
+        @if(ViewBag.ProductsSoldOutCount > 0) {
+            <div class="dashboard-info-box">
+                <!-- small box -->
+                <div class="small-box bg-red">
+                    <div class="inner">
+                        <h3>@ViewBag.ProductsSoldOutCount</h3>
+                        @if (ViewBag.ProductsSoldOutCount == 1)
+                        {
+                            <p>Vyprodaný produkt</p>
+                        }
+                        else if (ViewBag.ProductsSoldOutCount < 5)
+                        {
+                            <p>Vyprodané produkty</p>
+                        }
+                        else
+                        {
+                            <p>Vyprodaných produktů</p>
+                        }
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-alert"></i>
+                    </div>
+                </div>
+            </div><!-- ./col -->  
+        }
+        @if(ViewBag.ProductsInStockCount > 0) {
+            <div class="dashboard-info-box">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>@ViewBag.ProductsInStockCount</h3>
+                        @if (ViewBag.ProductsInStockCount == 1)
+                        {
+                            <p>Položka skladem</p>
+                        }
+                        else if (ViewBag.ProductsInStockCount < 5)
+                        {
+                            <p>Položky skladem</p>
+                        }
+                        else
+                        {
+                            <p>Položek skladem</p>
+                        }
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-information"></i>
+                    </div>
+                </div>
+            </div><!-- ./col -->  
+        }
+        @if(ViewBag.OrdersWaitingForPaymentCount > 0) { 
+            <div class="dashboard-info-box">
+                <!-- small box -->
+                <div class="small-box bg-aqua">
+                    <div class="inner">
+                        <h3>@ViewBag.OrdersWaitingForPaymentCount</h3>
+                        @if (ViewBag.OrdersWaitingForPaymentCount == 1)
+                        {
+                            <p>Objednávka čeká na platbu</p>
+                        }
+                        else if (ViewBag.OrdersWaitingForPaymentCount < 5)
+                        {
+                            <p>Objednávky čekají na platbu</p>
+                        }
+                        else
+                        {
+                            <p>Objednávek čeká na platbu</p>
+                        }
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-social-usd"></i>
+                    </div>
+                </div>
+            </div><!-- ./col -->  
+        }
+</section>

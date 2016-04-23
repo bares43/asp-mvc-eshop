@@ -1,0 +1,17 @@
+﻿@using Eshop.Class
+@model Eshop.Class.SessionCart
+@{
+    ViewBag.Title = "HeaderCart";
+}
+
+<div class="hidden-xshidden-sm">
+    <div id="welcome-line" class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12 col-sm-push-6  hidden-xs">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <a href="@Url.Action("Index","Cart")" class="btn btn-success"> <i class="fa fa-shopping-cart"></i> [ @Model.GetAmount() ] položek za @($"{Model.GetTotalPrice():C0}")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

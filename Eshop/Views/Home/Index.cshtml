@@ -1,0 +1,13 @@
+﻿@using DataAccess.Model
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3 class="col-md-12 col-sm-12 col-xs-12 no-margin-top">Doporučené produkty</h3>
+@if (ViewBag.HighlightedProducts is IList<Product>)
+{
+foreach (Product product in ViewBag.HighlightedProducts)
+ {
+     @Html.Action("Preview", "Product", new {idProduct = product.Id})
+ }
+}

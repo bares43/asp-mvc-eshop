@@ -1,0 +1,274 @@
+﻿@using System.Collections
+@using DataAccess.Model
+@model Eshop.Models.View.OrderForm
+
+@{
+    ViewBag.Title = "Order";
+}
+
+
+<h1>Objednávka</h1>
+@if (!Model.IsAuthenticated)
+{
+    <div class="well">
+        <h3>Přihlášení</h3>
+        <span class="help-block">Přihlašte se pod svým účtem a nebudete muset zadávat adresu.</span>
+        <br>
+        @using (Html.BeginForm("SignIn", "Login", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input placeholder="E-mail" class="form-control" type="email" name="email">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input placeholder="Heslo" class="form-control" type="password" name="password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-lock"></i> Přihlásit</button>
+                </div>
+            </div>
+
+            <input type="hidden" name="redirectTo" value="@Url.Action("Order", "Cart")" />
+        }
+    </div>
+}
+
+@using (Html.BeginForm("SendOrder", "Cart", FormMethod.Post))
+{
+
+    <div class="well">
+        <h3>Kontaktní údaje</h3>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "E-mail" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Jméno" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control", placeholder = "Příjmení" } })
+            @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", placeholder = "Telefon" } })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+        </div>
+
+
+    </div>
+
+
+
+
+        <div class="well">
+            <h3>Doprava</h3>
+
+            @Html.ValidationMessageFor(model => model.Delivery, "", new { @class = "text-danger" })
+
+            @foreach (var delivery in Model.DeliveryWays)
+            {
+                <div>
+                    <label><input type="radio" name="@nameof(Model.Delivery)" value="@delivery.Id" data-price="@delivery.Price" class="delivery-way" @($"{(Model.Delivery == delivery.Id ? "checked":"")}") /> @delivery.Name (@delivery.Price kč)</label>
+                </div>
+            }
+
+        </div>
+
+        <div class="well">
+            <h3>Platba</h3>
+            @Html.ValidationMessageFor(model => model.Payment, "", new { @class = "text-danger" })
+
+            @foreach (var payment in Model.PaymentWays)
+            {
+                <div>
+                    <label><input type="radio" name="@nameof(Model.Payment)" value="@payment.Id" data-price="@payment.Price" class="payment-way" @($"{(Model.Payment == payment.Id ? "checked":"")}") /> @payment.Name (@payment.Price kč)</label>
+                </div>
+            }
+
+        </div>
+
+
+
+        <div class="well" id="delivery-address">
+            <h3>Doručovací adresa</h3>
+            <br>
+            <div>
+
+                @if (Model.DeliveryAddresses is IList && Model.DeliveryAddresses.Count > 0)
+                {
+                    foreach (var address in Model.DeliveryAddresses)
+                    {
+                        <div class="col-xs-12">
+                            <label>
+                                <input type="radio" class="delivery-address" name="@(nameof(Model.DeliveryAddressId))" value="@address.Id" @($"{(address.Primary ? "checked" : "")}")
+                                       data-@($"{nameof(Model.DeliveryName).ToLower()}")="@address.Name"
+                                       data-@($"{nameof(Model.DeliverySurname).ToLower()}")="@address.Surname"
+                                       data-@($"{nameof(Model.DeliveryStreet).ToLower()}")="@address.Street"
+                                       data-@($"{nameof(Model.DeliveryStreetCode).ToLower()}")="@address.StreedCode"
+                                       data-@($"{nameof(Model.DeliveryCity).ToLower()}")="@address.City"
+                                       data-@($"{nameof(Model.DeliveryZipCode).ToLower()}")="@address.ZipCode"/>
+                                <span>
+                                    @address.Name @address.Surname, @address.Street @address.StreedCode, @address.City, @address.ZipCode
+                                </span>
+                            </label>
+                        </div>
+                    }
+
+                    <br />
+                    <br/>
+                    <span>Adresu můžete upravit</span>
+                }
+
+
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliveryName, new { htmlAttributes = new { @class = "form-control", placeholder = "Jméno", id = nameof(Model.DeliveryName).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliveryName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliverySurname, new { htmlAttributes = new { @class = "form-control", placeholder = "Příjmení", id = nameof(Model.DeliverySurname).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliverySurname, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliveryStreet, new { htmlAttributes = new { @class = "form-control", placeholder = "Ulice", id = nameof(Model.DeliveryStreet).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliveryStreet, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliveryStreetCode, new { htmlAttributes = new { @class = "form-control", placeholder = "č.p.", id = nameof(Model.DeliveryStreetCode).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliveryStreetCode, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliveryCity, new { htmlAttributes = new { @class = "form-control", placeholder = "Město", id = nameof(Model.DeliveryCity).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliveryCity, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.EditorFor(model => model.DeliveryZipCode, new { htmlAttributes = new { @class = "form-control", placeholder = "PSČ", id = nameof(Model.DeliveryZipCode).ToLower() } })
+                    @Html.ValidationMessageFor(model => model.DeliveryZipCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+    <div class="well" id="billing-address">
+        <h3>Fakturační adresa</h3>
+        <br>
+        <div>
+
+            @if (Model.BillingAddresses is IList && Model.BillingAddresses.Count > 0)
+            {
+                foreach (var address in Model.BillingAddresses)
+                {
+                    <div>
+                        <label>
+                            <input type="radio" class="billing-address" name="@(nameof(Model.BillingAddressId))" value="@address.Id" @($"{(address.Primary ? "checked" : "")}")
+                                   data-@($"{nameof(Model.BillingName).ToLower()}")="@address.Name"
+                                   data-@($"{nameof(Model.BillingSurname).ToLower()}")="@address.Surname"
+                                   data-@($"{nameof(Model.BillingStreet).ToLower()}")="@address.Street"
+                                   data-@($"{nameof(Model.BillingStreetCode).ToLower()}")="@address.StreedCode"
+                                   data-@($"{nameof(Model.BillingCity).ToLower()}")="@address.City"
+                                   data-@($"{nameof(Model.BillingZipCode).ToLower()}")="@address.ZipCode"/>
+                            <span>
+                                    @address.Name @address.Surname, @address.Street @address.StreedCode, @address.City, @address.ZipCode
+                                </span>
+                        </label>
+                    </div>
+                }
+
+                <br/>
+                <br/>
+                <span>Adresu můžete upravit</span>
+            }
+
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingName, new {htmlAttributes = new {@class = "form-control", placeholder = "Jméno", id = nameof(Model.BillingName).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingName, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingSurname, new {htmlAttributes = new {@class = "form-control", placeholder = "Příjmení", id = nameof(Model.BillingSurname).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingSurname, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingStreet, new {htmlAttributes = new {@class = "form-control", placeholder = "Ulice", id = nameof(Model.BillingStreet).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingStreet, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingStreetCode, new {htmlAttributes = new {@class = "form-control", placeholder = "č.p.", id = nameof(Model.BillingStreetCode).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingStreetCode, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingCity, new {htmlAttributes = new {@class = "form-control", placeholder = "Město", id = nameof(Model.BillingCity).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingCity, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.BillingZipCode, new {htmlAttributes = new {@class = "form-control", placeholder = "PSČ", id = nameof(Model.BillingZipCode).ToLower()}})
+                @Html.ValidationMessageFor(model => model.BillingZipCode, "", new {@class = "text-danger"})
+            </div>
+        </div>
+    </div>
+
+    if (!Model.IsAuthenticated)
+    {
+        <div class="well">
+            <h3>Registrace</h3>
+
+            <span class="help-block">Pokud se chcete zaregistrovat, zvolte si prosím heslo.</span>
+
+
+            <div class="form-group">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Heslo" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+
+        </div>
+    }
+
+        <div class="well">
+            <span>
+                <span>Celková cena včetně dopravy: <strong><span id="totalPrice" data-price="@Model.Cart.GetTotalPrice()">@Model.Cart.GetTotalPrice()</span> Kč</strong></span>
+            </span><br/><br/>
+            <div>
+                <button class="btn btn-lg btn-success"><i class="fa fa-arrow-right"></i> Dokončit nákup</button>
+            </div>
+        </div>
+
+
+}
+
+<script type="text/javascript">
+    $(".delivery-way, .payment-way").on("change", function () {
+        var totalPrice = 0;
+        if ($(".delivery-way:checked").length === 1) totalPrice += parseInt($(".delivery-way:checked").data("price"));
+        if ($(".payment-way:checked").length === 1) totalPrice += parseInt($(".payment-way:checked").data("price"));
+        totalPrice += parseInt($("#totalPrice").data("price"));
+        $("#totalPrice").text(totalPrice);
+    });
+
+    $(".delivery-address, .billing-address").on("change", function() {
+        var input = $(this);
+        var wrapper;
+        var items;
+        if (input.is(".delivery-address")) {
+            wrapper = $("#delivery-address");
+            items = ["@($"{nameof(Model.DeliveryName).ToLower()}")","@($"{nameof(Model.DeliverySurname).ToLower()}")","@($"{nameof(Model.DeliveryStreet).ToLower()}")","@($"{nameof(Model.DeliveryStreetCode).ToLower()}")","@($"{nameof(Model.DeliveryCity).ToLower()}")","@($"{nameof(Model.DeliveryZipCode).ToLower()}")"];
+        }
+        else if (input.is(".billing-address")) {
+            wrapper = $("#billing-address");
+            items = ["@($"{nameof(Model.BillingName).ToLower()}")","@($"{nameof(Model.BillingSurname).ToLower()}")","@($"{nameof(Model.BillingStreet).ToLower()}")","@($"{nameof(Model.BillingStreetCode).ToLower()}")","@($"{nameof(Model.BillingCity).ToLower()}")","@($"{nameof(Model.BillingZipCode).ToLower()}")"];
+        }
+
+        $.each(items, function (i, v) {
+            console.log(v);
+            console.log(input.data(v));
+            wrapper.find("input#" + v).val(input.attr("data-"+v));
+        });
+
+    });
+</script>

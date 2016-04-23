@@ -1,0 +1,117 @@
+﻿@using System.Activities.Expressions
+@using DataAccess.Model
+@{
+}
+<section class="content-header">
+    <h1>
+        Nastavení
+        <small>Přehled</small>
+    </h1>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6" id="delivery-wrapper">
+
+            <div class="box">
+                <div class="box-header">
+                    <h3>Doručovací metody</h3>
+                    @using (Ajax.BeginForm("AddDeliveryPayment", "Settings", null, new AjaxOptions() { HttpMethod = "POST", OnSuccess = "JsonAjaxCallback" }, new { @class = "form-inline" }))
+                    {
+                        <input type="hidden" name="type" value="@nameof(Delivery)" />
+                        <div class="form-group">
+                            <label class="control-label" for="delivery_name">Název</label>
+                            <input class="form-control" type="text" id="delivery_name" name="@nameof(DeliveryPayment.Name)" />
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label class="control-label" for="delivery_price">Cena</label>
+                                <input class="form-control" type="text" id="delivery_price" name="@nameof(DeliveryPayment.Price)" />
+                            </div>
+                        </div>
+                        <input type="submit" value="Přidat" class="btn btn-primary" />
+                    }
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>Název</th>
+                                <th>Cena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Delivery way in ViewBag.Delivery)
+                            {
+                                <tr>
+                                    <td>@way.Name</td>
+                                    <td>@($"{way.Price:C0}")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+
+        <div class="col-xs-12 col-md-6" id="payment-wrapper">
+
+            <div class="box">
+                <div class="box-header">
+                    <h3>Platební metody</h3>
+            @using (Ajax.BeginForm("AddDeliveryPayment","Settings",null, new AjaxOptions() { HttpMethod = "POST", OnSuccess = "JsonAjaxCallback" }, new { @class = "form-inline" }))
+            {
+                <input type="hidden" name="type" value="@nameof(Payment)" />
+
+                        <div class="form-group">
+                            <label class="control-label" for="payment_name">Název</label>
+                            <input class="form-control" type="text" id="payment_name" name="@nameof(DeliveryPayment.Name)" />
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label class="control-label" for="payment_price">Cena</label>
+                                <input class="form-control" type="text" id="payment_price" name="@nameof(DeliveryPayment.Price)"/>
+                            </div>
+                        </div>
+
+                        <input type="submit" value="Přidat" class="btn btn-primary" />
+            }
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Název</th>
+                        <th>Cena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Payment way in ViewBag.Payment)
+                    {
+                        <tr>
+                            <td>@way.Name</td>
+                            <td>@($"{way.Price:C0}")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+</section>
+
+<script type="text/javascript">
+    function addDeliveryPayment(type, name, price) {
+        var tdName = $("<td>").text(name);
+        var tdPrice = $("<td>").text(price);
+
+        $("#" + type + "-wrapper table tbody").append($("<tr>").append(tdName).append(tdPrice));
+    }
+
+    function clearForm(type) {
+        $("#" + type + "-wrapper form .form-group input").val("");
+    }
+</script>
+

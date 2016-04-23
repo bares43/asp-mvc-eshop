@@ -1,0 +1,38 @@
+﻿@model Eshop.Models.View.ProductList
+@{
+    ViewBag.Title = "List";
+}
+
+@if (Model.Phrase != null)
+{
+    <h3 class="col-md-12 col-sm-12 col-xs-12 no-margin-top">Hledání "@Model.Phrase"</h3>
+}
+else if (Model.Category != null)
+{
+    <h3 class="col-md-12 col-sm-12 col-xs-12 no-margin-top">@Model.Category.Name</h3>
+    <div>@Html.Raw(Model.Category.Description)</div>
+}
+@if (Model.Products != null && Model.Products.Any())
+{
+foreach (var product in Model.Products)
+ {
+     @Html.Action("Preview", "Product", new {idProduct = product.Id})
+    }
+
+    if (Model.Paginator != null)
+    {
+        @Html.Action("Paging", "Home", new { @action = "List", @controller = "Product", paginator = Model.Paginator })
+    }
+}
+else
+{
+
+    if (Model.Phrase != null)
+    {
+        <p>Žádný produkt nebyl nalezen.</p>
+    }
+    else if (Model.Category != null)
+    {
+        <p>Kategorie neobsahuje žádné produkty.</p>
+    }
+}

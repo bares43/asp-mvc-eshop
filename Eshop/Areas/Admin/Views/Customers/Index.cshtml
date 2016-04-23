@@ -1,0 +1,64 @@
+﻿@model List<DataAccess.Model.Customer>
+@{
+}
+<section class="content-header">
+    <h1>
+        Zákazníci
+        <small>Přehled</small>
+    </h1>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="box">
+                <div class="box-header">
+                    <a href="@Url.Action("Add", "Customers")" class="btn btn-primary">Přidat</a>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="col-xs-12 table-responsive">
+                            <table class="table table-bordered table-striped text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>E-mail</th>
+                                        <th>Jméno</th>
+                                        <th>Příjmení</th>
+                                        <th>Poslední přihlášení</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model)
+                                    {
+                                        <tr>
+                                            <td>@user.Id</td>
+                                            <td>@user.Email</td>
+                                            <td>@user.Name</td>
+                                            <td>@user.Surname</td>
+                                            <td>@user.LastLogin.ToString()</td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", "Customers", new {idUser = user.Id})" class="btn btn-default btn-sm">Upravit</a>
+                                                <a href="@Url.Action("ChangePasswordForm", "Customers", new {idUser = user.Id})" class="btn btn-default btn-sm">Změna hesla</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-sm-7 col-sm-push-5">
+                            @Html.Action("Paging", "Home", new { @action = "Index", @controller = "Customers", paginator = ViewBag.Paginator })
+                        </div>
+                    </div>
+
+                  
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</section>

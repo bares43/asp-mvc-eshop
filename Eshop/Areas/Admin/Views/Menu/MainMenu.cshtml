@@ -1,0 +1,30 @@
+﻿@model List<Eshop.Class.MenuItem>
+@{
+    Layout = null;
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="user-panel">
+        <div class="info" style="position: static">
+            <p>@ViewBag.UserName</p>
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="header">Navigace</li>
+
+        @foreach (var item in Model)
+        {
+            <li @if (ViewContext.HttpContext.Request.RequestContext.RouteData.Values["controller"].Equals(item.Controller))
+                {
+                    <text>class="active"</text>
+                }>
+                <a href="@Url.Action(item.Action, item.Controller)">
+                    <i class="fa fa-@item.Icon"></i> <span>@item.Caption</span> <i class="pull-right"></i>
+                </a>
+            </li>
+        }
+        
+    </ul>
+}

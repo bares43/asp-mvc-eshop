@@ -1,0 +1,32 @@
+﻿@model Eshop.Models.View.Paging
+@{
+    Layout = null;
+}
+@if (Model.Paginator.TotalPages > 1)
+{
+    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+        <ul class="pagination">
+            <li class="paginate_button previous @if (Model.Paginator.CurrentPage == 1)
+                                                {
+                                                    <text>disabled</text>
+                                                }" id="example1_previous">
+                <a href="@Url.Action(Model.Action, Model.Controller, Model.UrlParams(Model.Paginator.CurrentPage - 1))" aria-controls="example1" data-dt-idx="0" tabindex="0">Předchozí</a>
+            </li>
+            @for (int page = 1; page <= Model.Paginator.TotalPages; page++)
+            {
+                <li class="paginate_button @if (page == Model.Paginator.CurrentPage)
+                                           {
+                                               <text>active</text>
+                                           }">
+                    <a href="@Url.Action(Model.Action, Model.Controller, Model.UrlParams(page) )" aria-controls="example1" data-dt-idx="5" tabindex="0">@page</a>
+                </li>
+            }
+            <li class="paginate_button next @if (Model.Paginator.CurrentPage == Model.Paginator.TotalPages)
+                                            {
+                                                <text>disabled</text>
+                                            }" id="example1_next">
+                <a href="@Url.Action(Model.Action, Model.Controller, Model.UrlParams(Model.Paginator.CurrentPage + 1))" aria-controls="example1" data-dt-idx="7" tabindex="0">Další</a>
+            </li>
+        </ul>
+    </div>
+}

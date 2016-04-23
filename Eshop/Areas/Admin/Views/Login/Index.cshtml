@@ -1,0 +1,36 @@
+﻿<section class="content-header">
+    <h1>Přihlášení</h1>
+</section>
+
+<section class="content">
+    @using (Html.BeginForm("SignIn", "Login")) {
+        <div class="row">
+            <div class="col-sm-12 col-lg-6">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">E-mail</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" placeholder="E-mail" name="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Heslo</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword3" placeholder="Heslo" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="persistent"> Zapamatovat
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-info pull-right">Přihlásit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</section>

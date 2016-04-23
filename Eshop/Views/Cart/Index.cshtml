@@ -1,0 +1,105 @@
+﻿@using Eshop.Class
+@model SessionCart
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@if (Model.Items.Any())
+{
+    <h1>Košík <a href="@Url.Action("Order")" class="btn btn-success btn-lg pull-right"><i class="fa fa-arrow-right"></i> Pokračovat v nákupu </a></h1>
+
+
+    <table class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th class="text-center">Popis</th>
+            <th class="text-center">Počet</th>
+            <th class="text-center">Změna</th>
+            <th class="text-center">Cena za ks</th>
+            <th class="text-center">Cena celkem</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        @foreach (var item in Model.Items)
+        {
+            <tr class="product-row" data-id="@Model.Items.IndexOf(item)" data-price="@item.Product.Price">
+
+                <td>@item.Product.Name</td>
+                <td>
+                    <input class="form-control amount" style="max-width: 50px" placeholder="1" size="50" type="text" value="@item.Amount">
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default recount inc"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-default recount dec"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></button>
+                    </div>
+                </td>
+                <td class="text-right">@item.Product.Price Kč</td>
+                <td class="text-right"><span class="product-price">@(item.Product.Price * item.Amount)</span> Kč</td>
+            </tr>
+        }
+
+
+        <tr>
+            <td colspan="4" style="text-align: left">Celkem: </td>
+            <td class="text-right"> <strong><span id="totalPrice">@Model.GetTotalPrice()</span> Kč</strong></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="@Url.Action("Order")" class="btn btn-success btn-lg pull-right" role="button"><i class="fa fa-arrow-right"></i> Pokračovat v nákupu</a>
+
+}
+else
+{
+    <h1>Košík</h1>
+    <p>V košíku není žádné zboží.</p>
+}
+
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".recount").on("click", function() {
+            var btn = $(this);
+            var tr = btn.closest("tr");
+            var amount = tr.find(".amount");
+
+            if (btn.is(".inc")) {
+                amount.val(parseInt(amount.val()) + 1);
+            } else {
+                amount.val(parseInt(amount.val()) - 1);
+            }
+
+            recount(tr.data("id"), amount.val());
+
+        });
+
+        $(".amount").on("blur", function() {
+            recount($(this).closest("tr").data("id"), $(this).val());
+        });
+
+        $(".delete").on("click", function() {
+            recount($(this).closest("tr").data("id"), 0);
+        });
+
+        function recount(id, amount) {
+            $.ajax({
+                url: "@Url.Action("Recount")",
+                data: {
+                    id: id,
+                    amount: parseInt(amount)
+                },
+                async: false,
+                method: "POST",
+                success: function(json) {
+                    JsonAjaxCallback(json);
+                }
+            });
+        }
+    });
+</script>

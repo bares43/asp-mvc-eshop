@@ -1,0 +1,38 @@
+﻿.order-state-created {
+    background-color: #337AB7 !important;
+    color: white !important;
+}
+.order-state-completed {
+    background-color: #DFF0D8 !important;
+}
+.order-state-proccesing {
+    background-color: #D9EDF7 !important;
+}
+.order-state-waitingforpayment {
+    background-color: #FCF8E3 !important;
+}
+.order-state-storno {
+    background-color: #F2DEDE !important;
+}
+.padding-right-1p {
+    padding-right: 1% !important;
+}
+.dashboard-info-box {
+    display: inline-block;
+    width: 250px;
+}
+.product-stock-status.stock-status-available {
+    background-color: #DFF0D8 !important;
+}
+.product-stock-status.stock-status-unavailable {
+    background-color: #F2DEDE !important;
+}
+.product-stock-status.stock-status-stockwithinafewdays, .product-stock-status.stock-status-stockwithinaweek, .product-stock-status.stock-status-stockwithinamonth {
+    background-color: #FCF8E3 !important;
+}
+
+@media (min-width: 768px) {
+     .text-left-sm {
+         text-align: left;
+     }
+}

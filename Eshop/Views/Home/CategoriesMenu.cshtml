@@ -1,0 +1,25 @@
+﻿@model IList<DataAccess.Model.Category>
+@{
+    ViewBag.Title = "CategoriesMenu";
+}
+<ul id="sideManu" class="list-group">
+    @foreach (var category in Model)
+    {
+        <li class="subMenu list-group-item open">
+            @if (category.Subcategories != null && category.Subcategories.Count > 0)
+            {
+                <a href="#">@category.Name</a>
+                <ul>
+                    @foreach (var subcategory in category.Subcategories)
+                    {
+                        <li><a href="@Url.Action("List", "Product", new {idCategory = subcategory.Id})">@subcategory.Name <i class="fa fa-angle-right pull-right"></i> </a></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <a href="@Url.Action("List", "Product", new {idCategory = category.Id})">@category.Name</a>
+            }
+        </li>
+    }
+</ul>
